@@ -3,66 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PM Dashboard – HDCRS</title>
+  <title>PM Dashboard – HDCRS V4</title>
   <style>
-    :root { --primary: #00695C; --bg: #F5E4D0; --card: white; --text: #3E2723; }
-    body { background: var(--bg); font-family: system-ui, sans-serif; margin: 0; padding: 2rem; display: flex; justify-content: center; }
-    .login-box, .container {
-      max-width: 500px; width: 100%; background: var(--card); border-radius: 20px; padding: 2rem;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.06); text-align: center;
-    }
-    .login-box h2, .container h1 { color: var(--primary); }
-    .login-box input { width: 100%; padding: 0.7rem; margin: 0.5rem 0; border: 1px solid #D7CCC8; border-radius: 8px; }
-    .btn { padding: 0.7rem 1.5rem; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; background: var(--primary); color: white; margin-top: 0.5rem; }
+    :root { --primary: #00695C; --bg: #F5E4D0; --card: white; --text: #3E2723; --border: #D7CCC8; }
+    * { box-sizing: border-box; }
+    body { background: var(--bg); font-family: system-ui, sans-serif; margin: 0; padding: 1.5rem; color: var(--text); display: flex; justify-content: center; }
+    .login-box, .container { max-width: 550px; width: 100%; background: var(--card); border-radius: 20px; padding: 2rem; box-shadow: 0 8px 24px rgba(0,0,0,0.06); text-align: center; }
+    .login-box { margin-top: 3rem; }
+    .login-box h2, .container h1 { color: var(--primary); margin: 0 0 1rem; }
+    .login-box input { width: 100%; padding: 0.6rem; margin: 0.4rem 0; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; }
+    .btn { padding: 0.6rem 1.5rem; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; background: var(--primary); color: white; margin-top: 0.5rem; font-size: 1rem; }
+    .btn:hover { opacity: 0.85; }
+    .btn-danger { background: #C44536; }
     .error { color: #C44536; margin-top: 0.5rem; }
     .hidden { display: none !important; }
-    input[type="date"] { padding: 0.6rem; border: 1px solid #D7CCC8; border-radius: 8px; font-size: 1rem; }
+    input[type="date"] { padding: 0.5rem; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; }
+    .info-box { background: #f9f7f4; border: 1px solid var(--border); border-radius: 12px; padding: 1rem; margin: 1rem 0; text-align: left; font-size: 0.9rem; }
+    .info-box h3 { color: var(--primary); margin: 0 0 0.3rem; }
+    .status-msg { margin-top: 1rem; font-weight: 600; }
+    .status-msg.ok { color: #2E7D32; }
+    .status-msg.err { color: #C44536; }
   </style>
 </head>
 <body>
-
-  <!-- Login Screen -->
   <div id="loginScreen" class="login-box">
-    <h2>🔐 PM Login</h2>
+    <h2>&#128274; PM Login</h2>
     <input type="text" id="loginName" placeholder="Full Name">
     <input type="password" id="loginPassword" placeholder="Password">
     <button class="btn" onclick="attemptLogin()">Login</button>
     <div class="error" id="loginError"></div>
   </div>
 
-  <!-- Dashboard (hidden until login) -->
   <div id="dashboard" class="container hidden">
-    <h1>📄 PM Dashboard – Client Daily Report</h1>
+    <h1>&#128196; PM Dashboard</h1>
     <p>Logged in as <span id="loggedUser"></span> | <a href="#" onclick="logout()">Logout</a></p>
-    <input type="date" id="reportDate"><br><br>
-    <button class="btn" onclick="generateReport()">📥 Generate PDF</button>
-    <button class="btn" style="background:#C44536;" onclick="sendReport()">📨 Send to Client</button>
-    <div id="status" style="margin-top:1rem; font-weight:bold;"></div>
+    <div class="info-box">
+      <h3>Client Report Generation</h3>
+      <p>This will generate a professional Daily Construction Progress Report PDF covering all 12 sections of the daily report for the selected date. Only <strong>Director-approved</strong> reports are included.</p>
+    </div>
+    <label style="display:block;margin:1rem 0 0.3rem;text-align:left;font-weight:600">Select Report Date:</label>
+    <input type="date" id="reportDate" style="width:100%">
+    <div style="margin-top:1rem">
+      <button class="btn" onclick="generateReport()">&#128196; Generate PDF</button>
+      <button class="btn btn-danger" onclick="sendReport()" style="margin-left:0.5rem">&#9993; Send to Client</button>
+    </div>
+    <div id="status" class="status-msg"></div>
   </div>
 
   <script>
-    const API_BASE = 'https://script.google.com/macros/s/AKfycbx14uKC7ZyT991b3jltKDa_a33_cIKFADBzZYeCXsAszlPbsS8-gA2-5hAXTlzJodUl/exec'; // ← CHANGE
-
-    const loggedUser = sessionStorage.getItem('hdcre_pm');
-    if (loggedUser) showDashboard(loggedUser);
+    const API_BASE = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+    const u = sessionStorage.getItem('hdcre_pm');
+    if (u) showDashboard(u);
 
     async function attemptLogin() {
       const name = document.getElementById('loginName').value.trim();
-      const password = document.getElementById('loginPassword').value.trim();
-      const errorDiv = document.getElementById('loginError');
-      if (!name || !password) { errorDiv.textContent = 'Enter name and password.'; return; }
+      const pw = document.getElementById('loginPassword').value.trim();
+      const err = document.getElementById('loginError');
+      if (!name || !pw) { err.textContent = 'Enter name and password.'; return; }
       try {
-        const res = await fetch(`${API_BASE}?action=login&name=${encodeURIComponent(name)}&password=${encodeURIComponent(password)}`);
-        const data = await res.json();
-        if (data.success && data.role === 'PM') {
-          sessionStorage.setItem('hdcre_pm', name);
-          showDashboard(name);
-        } else if (data.success && data.role !== 'PM') {
-          errorDiv.textContent = 'This portal is only for Project Managers.';
-        } else {
-          errorDiv.textContent = 'Invalid credentials.';
-        }
-      } catch (e) { errorDiv.textContent = 'Network error.'; }
+        const r = await fetch(`${API_BASE}?action=login&name=${encodeURIComponent(name)}&password=${encodeURIComponent(pw)}`);
+        const d = await r.json();
+        if (d.success && d.role === 'PM') { sessionStorage.setItem('hdcre_pm', name); showDashboard(name); }
+        else if (d.success) err.textContent = 'This portal is only for Project Managers.';
+        else err.textContent = 'Invalid credentials.';
+      } catch (e) { err.textContent = 'Network error.'; }
     }
 
     function showDashboard(name) {
@@ -70,37 +74,35 @@
       document.getElementById('dashboard').classList.remove('hidden');
       document.getElementById('loggedUser').textContent = name;
     }
-
-    function logout() {
-      sessionStorage.removeItem('hdcre_pm');
-      location.reload();
-    }
+    function logout() { sessionStorage.removeItem('hdcre_pm'); location.reload(); }
 
     async function generateReport() {
       const date = document.getElementById('reportDate').value;
-      if (!date) return alert('Select date.');
-      document.getElementById('status').innerText = '⏳ Generating...';
-      const res = await fetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'generateClientPDF', date }) });
-      const data = await res.json();
-      if (data.success) {
-        document.getElementById('status').innerHTML = `✅ PDF generated.<br><a href="${data.pdfUrl}" target="_blank">View</a>`;
-      } else {
-        document.getElementById('status').innerText = '❌ ' + data.message;
-      }
+      if (!date) return alert('Select a date.');
+      const s = document.getElementById('status');
+      s.className = 'status-msg'; s.textContent = 'Generating PDF...';
+      try {
+        const r = await fetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'generateClientPDF', date }) });
+        const d = await r.json();
+        if (d.success) {
+          s.className = 'status-msg ok';
+          s.innerHTML = `PDF generated successfully.<br><a href="${d.pdfUrl}" target="_blank" style="color:var(--primary)">View / Download PDF</a>`;
+        } else { s.className = 'status-msg err'; s.textContent = d.message || 'No approved reports for this date.'; }
+      } catch (e) { s.className = 'status-msg err'; s.textContent = 'Generation failed.'; }
     }
 
     async function sendReport() {
       const date = document.getElementById('reportDate').value;
-      if (!date) return alert('Select date.');
-      if (!confirm(`Send report for ${date} to client?`)) return;
-      document.getElementById('status').innerText = '⏳ Sending...';
-      const res = await fetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'sendToClient', date }) });
-      const data = await res.json();
-      if (data.success) {
-        document.getElementById('status').innerText = '✅ Report sent!';
-      } else {
-        document.getElementById('status').innerText = '❌ ' + data.message;
-      }
+      if (!date) return alert('Select a date.');
+      if (!confirm(`Send the daily report for ${date} to the client?`)) return;
+      const s = document.getElementById('status');
+      s.className = 'status-msg'; s.textContent = 'Sending...';
+      try {
+        const r = await fetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'sendToClient', date }) });
+        const d = await r.json();
+        if (d.success) { s.className = 'status-msg ok'; s.textContent = 'Report sent to client successfully!'; }
+        else { s.className = 'status-msg err'; s.textContent = d.message || 'Failed.'; }
+      } catch (e) { s.className = 'status-msg err'; s.textContent = 'Send failed.'; }
     }
   </script>
 </body>
