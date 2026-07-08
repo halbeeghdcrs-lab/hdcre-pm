@@ -1,108 +1,930 @@
+<!-- Version 4.1 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PM Dashboard – HDCRS V4</title>
+  <title>PM Portal - HDCRS V4</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    :root { --primary: #00695C; --bg: #F5E4D0; --card: white; --text: #3E2723; --border: #D7CCC8; }
-    * { box-sizing: border-box; }
-    body { background: var(--bg); font-family: system-ui, sans-serif; margin: 0; padding: 1.5rem; color: var(--text); display: flex; justify-content: center; }
-    .login-box, .container { max-width: 550px; width: 100%; background: var(--card); border-radius: 20px; padding: 2rem; box-shadow: 0 8px 24px rgba(0,0,0,0.06); text-align: center; }
-    .login-box { margin-top: 3rem; }
-    .login-box h2, .container h1 { color: var(--primary); margin: 0 0 1rem; }
-    .login-box input { width: 100%; padding: 0.6rem; margin: 0.4rem 0; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; }
-    .btn { padding: 0.6rem 1.5rem; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; background: var(--primary); color: white; margin-top: 0.5rem; font-size: 1rem; }
-    .btn:hover { opacity: 0.85; }
-    .btn-danger { background: #C44536; }
-    .error { color: #C44536; margin-top: 0.5rem; }
+    :root {
+      --primary: #00695C;
+      --primary-dark: #004D40;
+      --bg: #F5E4D0;
+      --card: white;
+      --text: #3E2723;
+      --border: #D7CCC8;
+      --danger: #C44536;
+      --warn: #E65100;
+      --success: #2E7D32;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      font-family: system-ui, sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* LOGIN SCREEN */
+    .login-screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+    .login-box {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      text-align: center;
+      width: 100%;
+      max-width: 420px;
+    }
+    .login-box .logo-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: contain;
+      margin-bottom: 0.5rem;
+    }
+    .login-box h2 {
+      color: var(--primary-dark);
+      margin-bottom: 1.2rem;
+      font-size: 1.4rem;
+    }
+    .login-box input {
+      width: 100%;
+      padding: 0.65rem 0.8rem;
+      margin: 0.4rem 0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 1rem;
+      color: var(--text);
+      background: #faf8f5;
+    }
+    .login-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0,105,92,0.12);
+    }
+    .login-error {
+      color: var(--danger);
+      margin-top: 0.6rem;
+      font-size: 0.9rem;
+      min-height: 1.2em;
+    }
+
+    /* BUTTONS */
+    .btn {
+      padding: 0.6rem 1.5rem;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 600;
+      background: var(--primary);
+      color: white;
+      font-size: 0.95rem;
+      transition: background 0.2s, opacity 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-decoration: none;
+    }
+    .btn:hover { background: var(--primary-dark); }
+    .btn:active { opacity: 0.85; }
+    .btn-danger { background: var(--danger); }
+    .btn-danger:hover { background: #a33a2e; }
+    .btn-sm { padding: 0.4rem 1rem; font-size: 0.85rem; }
+    .btn-full { width: 100%; justify-content: center; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* MAIN CONTAINER */
+    .app-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
     .hidden { display: none !important; }
-    input[type="date"] { padding: 0.5rem; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; }
-    .info-box { background: #f9f7f4; border: 1px solid var(--border); border-radius: 12px; padding: 1rem; margin: 1rem 0; text-align: left; font-size: 0.9rem; }
-    .info-box h3 { color: var(--primary); margin: 0 0 0.3rem; }
-    .status-msg { margin-top: 1rem; font-weight: 600; }
-    .status-msg.ok { color: #2E7D32; }
-    .status-msg.err { color: #C44536; }
+
+    /* TOP BAR */
+    .top-bar {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-bottom: 1.2rem;
+    }
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .top-bar .logo-img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: contain;
+    }
+    .top-bar h1 {
+      font-size: 1.2rem;
+      color: var(--primary-dark);
+    }
+    .top-bar h1 span {
+      font-size: 0.8rem;
+      color: #8D6E63;
+      font-weight: 400;
+      display: block;
+    }
+    .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.9rem;
+    }
+    .top-bar-right .user-name {
+      color: var(--primary-dark);
+      font-weight: 600;
+    }
+    .logout-link {
+      color: var(--danger);
+      cursor: pointer;
+      text-decoration: underline;
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+
+    /* TABS */
+    .tab-bar {
+      display: flex;
+      gap: 0;
+      margin-bottom: 1.2rem;
+      background: var(--card);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 0.85rem 1rem;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text);
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+    .tab-btn:not(.active):hover {
+      background: rgba(0,105,92,0.06);
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    }
+    .card-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #8D6E63;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.8rem;
+    }
+
+    /* TAB 1 - GENERATE REPORT */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .report-info-box {
+      background: #f9f7f4;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.2rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .report-info-box h3 {
+      color: var(--primary);
+      margin-bottom: 0.3rem;
+      font-size: 1rem;
+    }
+    .report-date-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      align-items: flex-end;
+      margin-bottom: 1rem;
+    }
+    .report-date-row label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    .report-date-row input[type="date"] {
+      padding: 0.55rem 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 1rem;
+      color: var(--text);
+      background: #faf8f5;
+    }
+    .report-date-row input[type="date"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0,105,92,0.12);
+    }
+    .report-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .status-msg {
+      margin-top: 1rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .status-msg.ok { color: var(--success); }
+    .status-msg.err { color: var(--danger); }
+    .status-msg a { color: var(--primary); text-decoration: underline; }
+
+    /* TAB 2 - ANALYTICS DASHBOARD */
+    .dash-loading {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #8D6E63;
+      font-size: 1rem;
+    }
+    .dash-loading .spinner {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 0.8rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .dash-error {
+      text-align: center;
+      padding: 2rem;
+      color: var(--danger);
+    }
+
+    /* KPI CARDS */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+    .kpi-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 1.2rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+      text-align: center;
+      border-top: 4px solid var(--primary);
+    }
+    .kpi-card.kpi-pending { border-top-color: var(--warn); }
+    .kpi-card.kpi-approved { border-top-color: var(--success); }
+    .kpi-card.kpi-efficiency { border-top-color: #FFB74D; }
+    .kpi-card.kpi-sites { border-top-color: #7E57C2; }
+    .kpi-card.kpi-rate { border-top-color: #42A5F5; }
+    .kpi-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      line-height: 1.1;
+    }
+    .kpi-label {
+      font-size: 0.8rem;
+      color: #8D6E63;
+      margin-top: 0.3rem;
+      font-weight: 500;
+    }
+
+    /* CHART ROWS */
+    .chart-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+    .chart-col-left {
+      flex: 6;
+      min-width: 0;
+    }
+    .chart-col-right {
+      flex: 4;
+      min-width: 0;
+    }
+    .chart-col-half {
+      flex: 1;
+      min-width: 0;
+    }
+    .chart-wrapper {
+      height: 300px;
+      position: relative;
+    }
+
+    /* WEEKLY TABLE */
+    .weekly-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .weekly-table th {
+      background: var(--primary);
+      color: white;
+      padding: 0.6rem 0.8rem;
+      text-align: left;
+      font-weight: 600;
+    }
+    .weekly-table th:first-child { border-radius: 8px 0 0 0; }
+    .weekly-table th:last-child { border-radius: 0 8px 0 0; }
+    .weekly-table td {
+      padding: 0.55rem 0.8rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .weekly-table tr:nth-child(even) td { background: #faf8f5; }
+    .weekly-table tr:last-child td:first-child { border-radius: 0 0 0 8px; }
+    .weekly-table tr:last-child td:last-child { border-radius: 0 0 8px 0; }
+    .table-scroll { overflow-x: auto; }
+
+    /* ISSUES SECTION */
+    .issues-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.8rem;
+    }
+    .issue-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border-left: 4px solid var(--danger);
+    }
+    .issue-card .issue-block {
+      font-weight: 700;
+      color: var(--primary-dark);
+      font-size: 0.95rem;
+    }
+    .issue-card .issue-details {
+      color: var(--text);
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+      line-height: 1.4;
+    }
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 0.8rem;
+    }
+    .no-data-msg {
+      text-align: center;
+      color: #8D6E63;
+      padding: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .chart-row { flex-direction: column; }
+      .chart-col-left, .chart-col-right, .chart-col-half { flex: 1; }
+    }
+    @media (max-width: 600px) {
+      .kpi-grid { grid-template-columns: 1fr; }
+      .app-container { padding: 0.8rem; }
+      .top-bar { padding: 0.8rem 1rem; }
+      .top-bar h1 { font-size: 1rem; }
+      .report-actions { flex-direction: column; }
+      .report-actions .btn { width: 100%; justify-content: center; }
+    }
   </style>
 </head>
 <body>
-  <div id="loginScreen" class="login-box">
-    <h2>&#128274; PM Login</h2>
-    <input type="text" id="loginName" placeholder="Full Name">
-    <input type="password" id="loginPassword" placeholder="Password">
-    <button class="btn" onclick="attemptLogin()">Login</button>
-    <div class="error" id="loginError"></div>
+
+  <!-- LOGIN SCREEN -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-box">
+      <img src="https://raw.githubusercontent.com/halbeeghdcrs-lab/HALBEEG-HDCRS/main/logo.png" alt="Logo" class="logo-img">
+      <h2>PM Portal Login</h2>
+      <input type="text" id="loginName" placeholder="Full Name" autocomplete="off">
+      <input type="password" id="loginPassword" placeholder="Password">
+      <button class="btn btn-full" onclick="attemptLogin()" style="margin-top:0.8rem">Login</button>
+      <div class="login-error" id="loginError"></div>
+    </div>
   </div>
 
-  <div id="dashboard" class="container hidden">
-    <h1>&#128196; PM Dashboard</h1>
-    <p>Logged in as <span id="loggedUser"></span> | <a href="#" onclick="logout()">Logout</a></p>
-    <div class="info-box">
-      <h3>Client Report Generation</h3>
-      <p>This will generate a professional Daily Construction Progress Report PDF covering all 12 sections of the daily report for the selected date. Only <strong>Director-approved</strong> reports are included.</p>
+  <!-- MAIN APP -->
+  <div id="appMain" class="app-container hidden">
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <img src="https://raw.githubusercontent.com/halbeeghdcrs-lab/HALBEEG-HDCRS/main/logo.png" alt="Logo" class="logo-img">
+        <h1>HDCRS PM Portal<span>Project Manager Dashboard</span></h1>
+      </div>
+      <div class="top-bar-right">
+        <span class="user-name" id="loggedUser"></span>
+        <span class="logout-link" onclick="logout()">Logout</span>
+      </div>
     </div>
-    <label style="display:block;margin:1rem 0 0.3rem;text-align:left;font-weight:600">Select Report Date:</label>
-    <input type="date" id="reportDate" style="width:100%">
-    <div style="margin-top:1rem">
-      <button class="btn" onclick="generateReport()">&#128196; Generate PDF</button>
-      <button class="btn btn-danger" onclick="sendReport()" style="margin-left:0.5rem">&#9993; Send to Client</button>
+
+    <!-- TAB BAR -->
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tabBtnReport" onclick="switchTab('report')">Generate Report</button>
+      <button class="tab-btn" id="tabBtnDashboard" onclick="switchTab('dashboard')">Analytics Dashboard</button>
     </div>
-    <div id="status" class="status-msg"></div>
+
+    <!-- TAB 1: GENERATE REPORT -->
+    <div class="tab-panel active" id="panelReport">
+      <div class="card">
+        <div class="report-info-box">
+          <h3>Client Report Generation</h3>
+          <p>Generate a professional Daily Construction Progress Report PDF covering all 12 sections of the daily report for the selected date. Only <strong>Director-approved</strong> reports are included.</p>
+        </div>
+        <div class="report-date-row">
+          <div>
+            <label for="reportDate">Select Report Date:</label>
+            <input type="date" id="reportDate">
+          </div>
+        </div>
+        <div class="report-actions">
+          <button class="btn" onclick="generateReport()">Generate PDF</button>
+          <button class="btn btn-danger" onclick="sendReport()">Send to Client</button>
+        </div>
+        <div id="reportStatus" class="status-msg"></div>
+      </div>
+    </div>
+
+    <!-- TAB 2: ANALYTICS DASHBOARD -->
+    <div class="tab-panel" id="panelDashboard">
+      <div id="dashLoading" class="dash-loading hidden">
+        <div class="spinner"></div>
+        <div>Loading dashboard data...</div>
+      </div>
+      <div id="dashError" class="dash-error hidden"></div>
+      <div id="dashContent" class="hidden">
+
+        <!-- KPI CARDS -->
+        <div class="kpi-grid" id="kpiGrid"></div>
+
+        <!-- CHARTS ROW 1 -->
+        <div class="chart-row">
+          <div class="chart-col-left card">
+            <div class="card-title">Submission Trend (Last 30 Days)</div>
+            <div class="chart-wrapper">
+              <canvas id="chartSubmission"></canvas>
+            </div>
+          </div>
+          <div class="chart-col-right card">
+            <div class="card-title">Block Status Distribution</div>
+            <div class="chart-wrapper">
+              <canvas id="chartBlockStatus"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHARTS ROW 2 -->
+        <div class="chart-row">
+          <div class="chart-col-half card">
+            <div class="card-title">Workforce Trend (Last 7 Days)</div>
+            <div class="chart-wrapper">
+              <canvas id="chartWorkforce"></canvas>
+            </div>
+          </div>
+          <div class="chart-col-half card">
+            <div class="card-title">Weekly Summary</div>
+            <div class="table-scroll">
+              <table class="weekly-table" id="weeklyTable">
+                <thead>
+                  <tr>
+                    <th>Week Start</th>
+                    <th>Reports</th>
+                    <th>Sites Covered</th>
+                  </tr>
+                </thead>
+                <tbody id="weeklyBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- RECENT ISSUES -->
+        <div class="card" style="margin-top:1.2rem">
+          <div class="section-title">Recent Issues</div>
+          <div class="issues-grid" id="issuesGrid"></div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 
   <script>
-    const API_BASE = 'https://script.google.com/macros/s/AKfycbw9ZWvh8X6vXRv0RA6MpYqE3OqLqNGNX9_w2pZP4G0ZthdweZ6M2gKYzyfqvgNhHL5s/exec';
-    const u = sessionStorage.getItem('hdcre_pm');
-    if (u) showDashboard(u);
+    var API_BASE = 'https://script.google.com/macros/s/AKfycbx14uKC7ZyT991b3jltKDa_a33_cIKFADBzZYeCXsAszlPbsS8-gA2-5hAXTlzJodUl/exec';
+    var dashboardData = null;
+    var chartSubmission = null;
+    var chartBlockStatus = null;
+    var chartWorkforce = null;
 
-    async function attemptLogin() {
-      const name = document.getElementById('loginName').value.trim();
-      const pw = document.getElementById('loginPassword').value.trim();
-      const err = document.getElementById('loginError');
-      if (!name || !pw) { err.textContent = 'Enter name and password.'; return; }
-      try {
-        const r = await fetch(`${API_BASE}?action=login&name=${encodeURIComponent(name)}&password=${encodeURIComponent(pw)}`);
-        const d = await r.json();
-        if (d.success && d.role === 'PM') { sessionStorage.setItem('hdcre_pm', name); showDashboard(name); }
-        else if (d.success) err.textContent = 'This portal is only for Project Managers.';
-        else err.textContent = 'Invalid credentials.';
-      } catch (e) { err.textContent = 'Network error.'; }
+    // Check session on load
+    var savedUser = sessionStorage.getItem('hdcre_pm');
+    if (savedUser) {
+      showApp(savedUser);
     }
 
-    function showDashboard(name) {
+    // LOGIN
+    function attemptLogin() {
+      var name = document.getElementById('loginName').value.trim();
+      var pw = document.getElementById('loginPassword').value.trim();
+      var errEl = document.getElementById('loginError');
+      if (!name || !pw) {
+        errEl.textContent = 'Enter name and password.';
+        return;
+      }
+      errEl.textContent = '';
+      var url = API_BASE + '?action=login&name=' + encodeURIComponent(name) + '&password=' + encodeURIComponent(pw);
+      fetch(url)
+        .then(function(resp) { return resp.json(); })
+        .then(function(data) {
+          if (data.success && data.role === 'PM') {
+            sessionStorage.setItem('hdcre_pm', name);
+            showApp(name);
+          } else if (data.success) {
+            errEl.textContent = 'This portal is only for Project Managers.';
+          } else {
+            errEl.textContent = 'Invalid credentials.';
+          }
+        })
+        .catch(function() {
+          errEl.textContent = 'Network error. Please try again.';
+        });
+    }
+
+    function showApp(name) {
       document.getElementById('loginScreen').classList.add('hidden');
-      document.getElementById('dashboard').classList.remove('hidden');
+      document.getElementById('appMain').classList.remove('hidden');
       document.getElementById('loggedUser').textContent = name;
     }
-    function logout() { sessionStorage.removeItem('hdcre_pm'); location.reload(); }
 
-    async function generateReport() {
-      const date = document.getElementById('reportDate').value;
-      if (!date) return alert('Select a date.');
-      const s = document.getElementById('status');
-      s.className = 'status-msg'; s.textContent = 'Generating PDF...';
-      try {
-        const r = await fetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'generateClientPDF', date }) });
-        const d = await r.json();
-        if (d.success) {
-          s.className = 'status-msg ok';
-          s.innerHTML = `PDF generated successfully.<br><a href="${d.pdfUrl}" target="_blank" style="color:var(--primary)">View / Download PDF</a>`;
-        } else { s.className = 'status-msg err'; s.textContent = d.message || 'No approved reports for this date.'; }
-      } catch (e) { s.className = 'status-msg err'; s.textContent = 'Generation failed.'; }
+    function logout() {
+      sessionStorage.removeItem('hdcre_pm');
+      location.reload();
     }
 
-    async function sendReport() {
-      const date = document.getElementById('reportDate').value;
-      if (!date) return alert('Select a date.');
-      if (!confirm(`Send the daily report for ${date} to the client?`)) return;
-      const s = document.getElementById('status');
-      s.className = 'status-msg'; s.textContent = 'Sending...';
-      try {
-        const r = await fetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'sendToClient', date }) });
-        const d = await r.json();
-        if (d.success) { s.className = 'status-msg ok'; s.textContent = 'Report sent to client successfully!'; }
-        else { s.className = 'status-msg err'; s.textContent = d.message || 'Failed.'; }
-      } catch (e) { s.className = 'status-msg err'; s.textContent = 'Send failed.'; }
+    // TAB SWITCHING
+    function switchTab(tab) {
+      var btnReport = document.getElementById('tabBtnReport');
+      var btnDash = document.getElementById('tabBtnDashboard');
+      var panelReport = document.getElementById('panelReport');
+      var panelDash = document.getElementById('panelDashboard');
+
+      if (tab === 'report') {
+        btnReport.classList.add('active');
+        btnDash.classList.remove('active');
+        panelReport.classList.add('active');
+        panelDash.classList.remove('active');
+      } else {
+        btnDash.classList.add('active');
+        btnReport.classList.remove('active');
+        panelDash.classList.add('active');
+        panelReport.classList.remove('active');
+        loadDashboard();
+      }
+    }
+
+    // GENERATE REPORT (TAB 1)
+    function generateReport() {
+      var date = document.getElementById('reportDate').value;
+      if (!date) { alert('Please select a date.'); return; }
+      var s = document.getElementById('reportStatus');
+      s.className = 'status-msg';
+      s.textContent = 'Generating PDF...';
+
+      fetch(API_BASE, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'generateClientPDF', date: date })
+      })
+      .then(function(resp) { return resp.json(); })
+      .then(function(data) {
+        if (data.success) {
+          s.className = 'status-msg ok';
+          s.innerHTML = 'PDF generated successfully.<br><a href="' + data.pdfUrl + '" target="_blank">View / Download PDF</a>';
+        } else {
+          s.className = 'status-msg err';
+          s.textContent = data.message || 'No approved reports for this date.';
+        }
+      })
+      .catch(function() {
+        s.className = 'status-msg err';
+        s.textContent = 'PDF generation failed. Please try again.';
+      });
+    }
+
+    function sendReport() {
+      var date = document.getElementById('reportDate').value;
+      if (!date) { alert('Please select a date.'); return; }
+      if (!confirm('Send the daily report for ' + date + ' to the client?')) { return; }
+      var s = document.getElementById('reportStatus');
+      s.className = 'status-msg';
+      s.textContent = 'Sending...';
+
+      fetch(API_BASE, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'sendToClient', date: date })
+      })
+      .then(function(resp) { return resp.json(); })
+      .then(function(data) {
+        if (data.success) {
+          s.className = 'status-msg ok';
+          s.textContent = 'Report sent to client successfully!';
+        } else {
+          s.className = 'status-msg err';
+          s.textContent = data.message || 'Failed to send report.';
+        }
+      })
+      .catch(function() {
+        s.className = 'status-msg err';
+        s.textContent = 'Send failed. Please try again.';
+      });
+    }
+
+    // DASHBOARD (TAB 2)
+    function loadDashboard() {
+      if (dashboardData) {
+        renderDashboard(dashboardData);
+        return;
+      }
+      var loadingEl = document.getElementById('dashLoading');
+      var errorEl = document.getElementById('dashError');
+      var contentEl = document.getElementById('dashContent');
+      loadingEl.classList.remove('hidden');
+      errorEl.classList.add('hidden');
+      contentEl.classList.add('hidden');
+
+      var url = API_BASE + '?endpoint=dashboard';
+      fetch(url)
+        .then(function(resp) { return resp.json(); })
+        .then(function(data) {
+          loadingEl.classList.add('hidden');
+          dashboardData = data;
+          renderDashboard(data);
+        })
+        .catch(function(err) {
+          loadingEl.classList.add('hidden');
+          errorEl.classList.remove('hidden');
+          errorEl.textContent = 'Failed to load dashboard data. Please try again.';
+        });
+    }
+
+    function renderDashboard(data) {
+      var contentEl = document.getElementById('dashContent');
+      var errorEl = document.getElementById('dashError');
+      errorEl.classList.add('hidden');
+      contentEl.classList.remove('hidden');
+
+      var kpis = data.kpis || {};
+      renderKPICards(kpis);
+      renderSubmissionChart(data.submissionTrend || []);
+      renderBlockStatusChart(data.blockStatusSummary || {});
+      renderWorkforceChart(data.workforceTrend || []);
+      renderWeeklyTable(data.weeklySummary || []);
+      renderIssues(data.topIssues || []);
+    }
+
+    function renderKPICards(kpis) {
+      var grid = document.getElementById('kpiGrid');
+      var cards = [
+        { value: kpis.totalReports || 0, label: 'Total Reports', cls: '' },
+        { value: kpis.pending || 0, label: 'Pending', cls: 'kpi-pending' },
+        { value: kpis.approved || 0, label: 'Approved', cls: 'kpi-approved' },
+        { value: kpis.avgEfficiency || '0%', label: 'Avg Efficiency', cls: 'kpi-efficiency' },
+        { value: kpis.activeSites || 0, label: 'Active Sites', cls: 'kpi-sites' },
+        { value: (kpis.reportingRate || 0) + '%', label: 'Reporting Rate', cls: 'kpi-rate' }
+      ];
+      var html = '';
+      for (var i = 0; i < cards.length; i++) {
+        var c = cards[i];
+        html += '<div class="kpi-card ' + c.cls + '">';
+        html += '<div class="kpi-value">' + c.value + '</div>';
+        html += '<div class="kpi-label">' + c.label + '</div>';
+        html += '</div>';
+      }
+      grid.innerHTML = html;
+    }
+
+    function renderSubmissionChart(trend) {
+      var ctx = document.getElementById('chartSubmission').getContext('2d');
+      var labels = [];
+      var values = [];
+      for (var i = 0; i < trend.length; i++) {
+        var d = trend[i].date || '';
+        var parts = d.split('-');
+        if (parts.length === 3) {
+          labels.push(parts[1] + '/' + parts[2]);
+        } else {
+          labels.push(d);
+        }
+        values.push(trend[i].count || 0);
+      }
+      if (chartSubmission) { chartSubmission.destroy(); }
+      chartSubmission = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Reports Submitted',
+            data: values,
+            borderColor: '#00695C',
+            backgroundColor: 'rgba(0,105,92,0.1)',
+            fill: true,
+            tension: 0.3,
+            borderWidth: 2,
+            pointBackgroundColor: '#00695C',
+            pointRadius: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { stepSize: 1, color: '#8D6E63' },
+              grid: { color: 'rgba(0,0,0,0.04)' }
+            },
+            x: {
+              ticks: { color: '#8D6E63', maxRotation: 45 },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    function renderBlockStatusChart(summary) {
+      var ctx = document.getElementById('chartBlockStatus').getContext('2d');
+      var labels = [];
+      var values = [];
+      var keys = Object.keys(summary);
+      for (var i = 0; i < keys.length; i++) {
+        labels.push(keys[i]);
+        values.push(summary[keys[i]]);
+      }
+      var colors = ['#00695C', '#E65100', '#80CBC4', '#C44536', '#FFB74D', '#A5D6A7'];
+      if (chartBlockStatus) { chartBlockStatus.destroy(); }
+      chartBlockStatus = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: values,
+            backgroundColor: colors.slice(0, labels.length),
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { padding: 12, usePointStyle: true, color: '#3E2723', font: { size: 12 } }
+            }
+          },
+          cutout: '55%'
+        }
+      });
+    }
+
+    function renderWorkforceChart(trend) {
+      var ctx = document.getElementById('chartWorkforce').getContext('2d');
+      var labels = [];
+      var planned = [];
+      var available = [];
+      for (var i = 0; i < trend.length; i++) {
+        var d = trend[i].date || '';
+        var parts = d.split('-');
+        if (parts.length === 3) {
+          labels.push(parts[1] + '/' + parts[2]);
+        } else {
+          labels.push(d);
+        }
+        planned.push(trend[i].planned || 0);
+        available.push(trend[i].available || 0);
+      }
+      if (chartWorkforce) { chartWorkforce.destroy(); }
+      chartWorkforce = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Planned',
+              data: planned,
+              backgroundColor: '#00695C',
+              borderRadius: 4
+            },
+            {
+              label: 'Available',
+              data: available,
+              backgroundColor: '#80CBC4',
+              borderRadius: 4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: { usePointStyle: true, color: '#3E2723', font: { size: 12 } }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { color: '#8D6E63' },
+              grid: { color: 'rgba(0,0,0,0.04)' }
+            },
+            x: {
+              ticks: { color: '#8D6E63' },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    function renderWeeklyTable(weeks) {
+      var tbody = document.getElementById('weeklyBody');
+      if (!weeks || weeks.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#8D6E63;padding:1rem">No weekly data available.</td></tr>';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < weeks.length; i++) {
+        var w = weeks[i];
+        var d = w.weekStart || '';
+        var parts = d.split('-');
+        var display = d;
+        if (parts.length === 3) {
+          display = parts[1] + '/' + parts[2] + '/' + parts[0];
+        }
+        html += '<tr>';
+        html += '<td>' + display + '</td>';
+        html += '<td>' + (w.reports || 0) + '</td>';
+        html += '<td>' + (w.sitesCovered || 0) + '</td>';
+        html += '</tr>';
+      }
+      tbody.innerHTML = html;
+    }
+
+    function renderIssues(issues) {
+      var grid = document.getElementById('issuesGrid');
+      if (!issues || issues.length === 0) {
+        grid.innerHTML = '<div class="no-data-msg">No issues reported.</div>';
+        return;
+      }
+      var limit = issues.length;
+      if (limit > 10) { limit = 10; }
+      var html = '';
+      for (var i = 0; i < limit; i++) {
+        var iss = issues[i];
+        html += '<div class="issue-card">';
+        html += '<div class="issue-block">' + (iss.block || 'N/A') + '</div>';
+        html += '<div class="issue-details">' + (iss.details || 'No details') + '</div>';
+        html += '</div>';
+      }
+      grid.innerHTML = html;
     }
   </script>
 </body>
