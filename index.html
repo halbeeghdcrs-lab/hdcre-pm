@@ -538,13 +538,31 @@
           <div class="issues-grid" id="issuesGrid"></div>
         </div>
 
+        <!-- SITE COMPARISON -->
+        <div class="card" style="margin-top:1.2rem">
+          <div class="section-title">Site Comparison (30d)</div>
+          <div id="siteComparisonContainer"></div>
+        </div>
+
+        <!-- BLOCK PROGRESS -->
+        <div class="card" style="margin-top:1.2rem">
+          <div class="section-title">Latest Block Progress</div>
+          <div id="blockProgressContainer"></div>
+        </div>
+
+        <!-- RECENT REVISIONS -->
+        <div class="card" style="margin-top:1.2rem">
+          <div class="section-title">Recent Report Revisions</div>
+          <div id="revisionsContainer"></div>
+        </div>
+
       </div>
     </div>
 
   </div>
 
   <script>
-    var API_BASE = 'https://script.google.com/macros/s/AKfycbz11Ck85u2lDwj8F-gAGaf4bW6q5o-1ZDmZWm8qE4_9v-tGF8StT6nV7gAuAafzcing/exec';
+    var API_BASE = 'https://script.google.com/macros/s/AKfycbwaWiQGo17E3I4PAN-gNEvEBFRgw5TMpcfBifIIkPddqdvyPgD1iAlqsoU2VDAnfY1J/exec';
     var dashboardData = null;
     var chartSubmission = null;
     var chartBlockStatus = null;
@@ -713,6 +731,9 @@
       renderWorkforceChart(data.workforceTrend || []);
       renderWeeklyTable(data.weeklySummary || []);
       renderIssues(data.topIssues || []);
+      renderSiteComparison(data.siteComparison || []);
+      renderBlockProgressTable(data.blockProgressChart || []);
+      renderRevisions(data.recentRevisions || []);
     }
 
     function renderKPICards(kpis) {
@@ -723,7 +744,9 @@
         { value: kpis.approved || 0, label: 'Approved', cls: 'kpi-approved' },
         { value: kpis.avgEfficiency || '0%', label: 'Avg Efficiency', cls: 'kpi-efficiency' },
         { value: kpis.activeSites || 0, label: 'Active Sites', cls: 'kpi-sites' },
-        { value: (kpis.reportingRate || 0) + '%', label: 'Reporting Rate', cls: 'kpi-rate' }
+        { value: (kpis.reportingRate || 0) + '%', label: 'Reporting Rate', cls: 'kpi-rate' },
+        { value: kpis.rejected || 0, label: 'Rejected', cls: 'kpi-rejected' },
+        { value: (kpis.rejectionRate || 0) + '%', label: 'Rejection Rate', cls: 'kpi-rate' }
       ];
       var html = '';
       for (var i = 0; i < cards.length; i++) {
@@ -925,6 +948,47 @@
         html += '</div>';
       }
       grid.innerHTML = html;
+    }
+
+    function renderSiteComparison(sites) {
+      var container = document.getElementById('siteComparisonContainer');
+      if (!sites || sites.length === 0) { container.innerHTML = '<div class="no-data-msg">No site data.</div>'; return; }
+      var html = '<table style="width:100%;border-collapse:collapse;font-size:0.85rem"><tr><th style="background:#f3e7da;padding:0.5rem;text-align:left;border-bottom:2px solid #00695C">Site</th><th style="background:#f3e7da;padding:0.5rem;text-align:left;border-bottom:2px solid #00695C">Reports</th><th style="background:#f3e7da;padding:0.5rem;text-align:left;border-bottom:2px solid #00695C">Approved</th><th style="background:#f3e7da;padding:0.5rem;text-align:left;border-bottom:2px solid #00695C">Rate</th></tr>';
+      for (var i = 0; i < sites.length; i++) {
+        var s = sites[i];
+        var rc = s.approvalRate >= 80 ? '#2E7D32' : s.approvalRate >= 50 ? '#E65100' : '#C44536';
+        html += '<tr><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #D7CCC8;font-weight:600">' + s.site + '</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #D7CCC8">' + s.totalReports + '</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #D7CCC8">' + s.approvedReports + '</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #D7CCC8;color:' + rc + ';font-weight:600">' + s.approvalRate + '%</td></tr>';
+      }
+      html += '</table>';
+      container.innerHTML = html;
+    }
+
+    function renderBlockProgressTable(blocks) {
+      var container = document.getElementById('blockProgressContainer');
+      if (!blocks || blocks.length === 0) { container.innerHTML = '<div class="no-data-msg">No block data.</div>'; return; }
+      var html = '<table style="width:100%;border-collapse:collapse;font-size:0.85rem"><tr><th style="background:#f3e7da;padding:0.5rem;text-align:left;border-bottom:2px solid #00695C">Block</th><th style="background:#f3e7da;padding:0.5rem;text-align:left;border-bottom:2px solid #00695C">Target Ach.</th><th style="background:#f3e7da;padding:0.5rem;text-align:left;border-bottom:2px solid #00695C">Performance</th></tr>';
+      for (var i = 0; i < blocks.length; i++) {
+        var b = blocks[i];
+        var achStr = String(b.achievement || '0%').replace('%', '');
+        var achVal = parseFloat(achStr) || 0;
+        var ac = achVal >= 95 ? '#2E7D32' : achVal >= 70 ? '#E65100' : achVal > 0 ? '#C44536' : '#888';
+        html += '<tr><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #D7CCC8;font-weight:600">' + b.block + '</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #D7CCC8;color:' + ac + ';font-weight:700">' + b.achievement + '</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #D7CCC8">' + (b.performance || 'N/A') + '</td></tr>';
+      }
+      html += '</table>';
+      container.innerHTML = html;
+    }
+
+    function renderRevisions(revisions) {
+      var container = document.getElementById('revisionsContainer');
+      if (!revisions || revisions.length === 0) { container.innerHTML = '<div class="no-data-msg">No revisions.</div>'; return; }
+      var html = '';
+      for (var i = 0; i < revisions.length; i++) {
+        var r = revisions[i];
+        html += '<div style="padding:0.5rem 0;border-bottom:1px solid #D7CCC8;font-size:0.82rem">';
+        html += '<div style="color:#888;font-size:0.78rem">' + r.timestamp + ' | ' + r.user + ' | ' + r.reportId + '</div>';
+        html += '<div style="color:#555">' + r.changes + '</div></div>';
+      }
+      container.innerHTML = html;
     }
   </script>
 </body>
