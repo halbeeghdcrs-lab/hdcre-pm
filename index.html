@@ -55,6 +55,18 @@
       margin-bottom: 1.2rem;
       font-size: 1.4rem;
     }
+    .login-label {
+      display: block;
+      text-align: left;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.2rem;
+      margin-top: 0.5rem;
+    }
+    .login-label:first-of-type {
+      margin-top: 0;
+    }
     .login-box input {
       width: 100%;
       padding: 0.65rem 0.8rem;
@@ -430,7 +442,9 @@
     <div class="login-box">
       <img src="https://raw.githubusercontent.com/halbeeghdcrs-lab/HALBEEG-HDCRS/main/logo.png" alt="Logo" class="logo-img">
       <h2>PM Portal Login</h2>
+      <label for="loginName" class="login-label">Name</label>
       <input type="text" id="loginName" placeholder="Full Name" autocomplete="off">
+      <label for="loginPassword" class="login-label">Password</label>
       <input type="password" id="loginPassword" placeholder="Password">
       <button class="btn btn-full" onclick="attemptLogin()" style="margin-top:0.8rem">Login</button>
       <div class="login-error" id="loginError"></div>
@@ -600,11 +614,11 @@
           } else if (data.success) {
             errEl.textContent = 'This portal is only for Project Managers.';
           } else {
-            errEl.textContent = 'Invalid credentials.';
+            errEl.textContent = 'Invalid name or password. Make sure your account exists in Staff_Accounts sheet with Role = PM.';
           }
         })
         .catch(function() {
-          errEl.textContent = 'Network error. Please try again.';
+          errEl.textContent = 'Network error — cannot reach backend. Check that Code.gs is deployed and API_BASE URL is correct.';
         });
     }
 
