@@ -1,4 +1,4 @@
-<!-- Version 5.0 -->
+<!-- Version 5.1 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -582,7 +582,10 @@
   </div>
 
   <script>
-    var API_BASE = 'https://script.google.com/macros/s/AKfycbxH3FRKSReHNrjUb_fIbnKsk6htgBhMwO6Mq3Al3cI_z710cMPc7XNGcw7Qb3IGKc0e/exec';
+    console.log('[PM] Portal V5.1 loaded — API_BASE updated, role check case-insensitive.');
+
+    // V5.1: API_BASE updated to the current live deployment (matches RE + Director portals).
+    var API_BASE = 'https://script.google.com/macros/s/AKfycbzurS6Ybn_a-65QQrWBCcUxSX8LPPVNAg5jn_kJAxNGmBiq0mypX21yXrSxM2toWNTO/exec';
     var dashboardData = null;
     var chartSubmission = null;
     var chartBlockStatus = null;
@@ -594,7 +597,7 @@
       showApp(savedUser);
     }
 
-    // LOGIN
+    // LOGIN (V5.1 — text-first parsing, case-insensitive PM role check, diagnostics)
     function attemptLogin() {
       var name = document.getElementById('loginName').value.trim();
       var pw = document.getElementById('loginPassword').value.trim();
@@ -604,21 +607,73 @@
         return;
       }
       errEl.textContent = '';
+
       var url = API_BASE + '?action=login&name=' + encodeURIComponent(name) + '&password=' + encodeURIComponent(pw);
+      console.log('[PM] Login attempt for: ' + name);
+
       fetch(url)
-        .then(function(resp) { return resp.json(); })
-        .then(function(data) {
-          if (data.success && data.role === 'PM') {
+        .then(function(resp) {
+          console.log('[PM] Response status: ' + resp.status);
+          if (!resp.ok) throw new Error('Server returned ' + resp.status);
+          return resp.text();
+        })
+        .then(function(text) {
+          var data;
+          try { data = JSON.parse(text); }
+          catch (e) {
+            throw new Error('Backend did not return JSON. Raw response: ' + text.slice(0, 200));
+          }
+          console.log('[PM] Response: ' + JSON.stringify(data));
+
+          var roleNorm = String(data.role || '').toUpperCase().replace(/[^A-Z]/g, '');
+
+          // --- Success path: accept PM in any casing ---
+          if (data.success && roleNorm === 'PM') {
             sessionStorage.setItem('hdcre_pm', name);
             showApp(name);
-          } else if (data.success) {
-            errEl.textContent = 'This portal is only for Project Managers.';
-          } else {
-            errEl.textContent = 'Invalid name or password. Make sure your account exists in Staff_Accounts sheet with Role = PM.';
+            return;
           }
+
+          if (data.success && data.role) {
+            errEl.textContent = 'Access denied. Your role is "' + data.role +
+              '" (raw: "' + (data.roleRaw || '?') + '"). This portal is for Project Managers only.';
+            return;
+          }
+
+          if (data.success) {
+            errEl.textContent = 'Login OK but no Role assigned. Ask the admin to set your Role to "PM".';
+            return;
+          }
+
+          // --- Failure: diagnostic message ---
+          var msg = 'Login failed. ';
+          switch (data.reason) {
+            case 'SHEET_NOT_FOUND':
+              msg += 'No staff sheet found. Tried: ' + (data.triedSheets || []).join(', ') +
+                     '. Create a sheet named "Staff_Accounts".';
+              break;
+            case 'HEADERS_MISSING':
+              msg += 'Staff sheet headers are wrong. Found: ' + JSON.stringify(data.headers || []) +
+                     '. Expected: Name | Password | Role.';
+              break;
+            case 'NO_MATCH':
+              msg += 'Name/password did not match. Sheet "' + (data.sheetUsed || '?') + '" has ' +
+                     (data.totalRows || 0) + ' data row(s). Names found: ' +
+                     (data.namesSample || []).join(', ') + '.';
+              break;
+            default:
+              msg += (data.message || 'Invalid name or password.') +
+                     ' Make sure your account exists in Staff_Accounts with Role = PM.';
+          }
+          errEl.textContent = msg;
         })
-        .catch(function() {
-          errEl.textContent = 'Network error — cannot reach backend. Check that Code.gs is deployed and API_BASE URL is correct.';
+        .catch(function(e) {
+          console.error('[PM] Login error: ' + e.message);
+          if (e.message.indexOf('Failed to fetch') !== -1) {
+            errEl.textContent = 'Network error — cannot reach backend. Check that Code.gs is deployed (Web App, "Anyone" access) and API_BASE is the /exec URL.';
+          } else {
+            errEl.textContent = 'Error: ' + e.message;
+          }
         });
     }
 
