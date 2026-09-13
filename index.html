@@ -1,110 +1,29 @@
-<!-- Version 5.1 -->
+<!-- Version 6.0 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PM Portal - HDCRS V5</title>
+  <title>PM Portal - HDCRS V6</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
-      --primary: #00695C;
-      --primary-dark: #004D40;
-      --bg: #F5E4D0;
-      --card: white;
-      --text: #3E2723;
-      --border: #D7CCC8;
-      --danger: #C44536;
-      --warn: #E65100;
-      --success: #2E7D32;
+      --primary: #00695C; --primary-dark: #004D40; --bg: #F5E4D0;
+      --card: white; --text: #3E2723; --border: #D7CCC8;
+      --danger: #C44536; --warn: #E65100; --success: #2E7D32;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--bg);
-      font-family: system-ui, sans-serif;
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    /* LOGIN SCREEN */
-    .login-screen {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 1.5rem;
-    }
-    .login-box {
-      background: var(--card);
-      border-radius: 20px;
-      padding: 2.5rem 2rem;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-      text-align: center;
-      width: 100%;
-      max-width: 420px;
-    }
-    .login-box .logo-img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: contain;
-      margin-bottom: 0.5rem;
-    }
-    .login-box h2 {
-      color: var(--primary-dark);
-      margin-bottom: 1.2rem;
-      font-size: 1.4rem;
-    }
-    .login-label {
-      display: block;
-      text-align: left;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 0.2rem;
-      margin-top: 0.5rem;
-    }
-    .login-label:first-of-type {
-      margin-top: 0;
-    }
-    .login-box input {
-      width: 100%;
-      padding: 0.65rem 0.8rem;
-      margin: 0.4rem 0;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-size: 1rem;
-      color: var(--text);
-      background: #faf8f5;
-    }
-    .login-box input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(0,105,92,0.12);
-    }
-    .login-error {
-      color: var(--danger);
-      margin-top: 0.6rem;
-      font-size: 0.9rem;
-      min-height: 1.2em;
-    }
-
-    /* BUTTONS */
-    .btn {
-      padding: 0.6rem 1.5rem;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      font-weight: 600;
-      background: var(--primary);
-      color: white;
-      font-size: 0.95rem;
-      transition: background 0.2s, opacity 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      text-decoration: none;
-    }
+    body { background: var(--bg); font-family: system-ui, sans-serif; color: var(--text); min-height: 100vh; }
+    .login-screen { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 1.5rem; }
+    .login-box { background: var(--card); border-radius: 20px; padding: 2.5rem 2rem; box-shadow: 0 8px 32px rgba(0,0,0,0.08); text-align: center; width: 100%; max-width: 420px; }
+    .login-box .logo-img { width: 80px; height: 80px; border-radius: 50%; object-fit: contain; margin-bottom: 0.5rem; }
+    .login-box h2 { color: var(--primary-dark); margin-bottom: 1.2rem; font-size: 1.4rem; }
+    .login-label { display: block; text-align: left; font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 0.2rem; margin-top: 0.5rem; }
+    .login-label:first-of-type { margin-top: 0; }
+    .login-box input { width: 100%; padding: 0.65rem 0.8rem; margin: 0.4rem 0; border: 1px solid var(--border); border-radius: 10px; font-size: 1rem; color: var(--text); background: #faf8f5; }
+    .login-box input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,105,92,0.12); }
+    .login-error { color: var(--danger); margin-top: 0.6rem; font-size: 0.9rem; min-height: 1.2em; }
+    .btn { padding: 0.6rem 1.5rem; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; background: var(--primary); color: white; font-size: 0.95rem; transition: background 0.2s, opacity 0.2s; display: inline-flex; align-items: center; gap: 0.4rem; text-decoration: none; }
     .btn:hover { background: var(--primary-dark); }
     .btn:active { opacity: 0.85; }
     .btn-danger { background: var(--danger); }
@@ -112,314 +31,69 @@
     .btn-sm { padding: 0.4rem 1rem; font-size: 0.85rem; }
     .btn-full { width: 100%; justify-content: center; }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    /* MAIN CONTAINER */
-    .app-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 1.5rem;
-    }
+    .app-container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
     .hidden { display: none !important; }
-
-    /* TOP BAR */
-    .top-bar {
-      background: var(--card);
-      border-radius: 16px;
-      padding: 1rem 1.5rem;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-      margin-bottom: 1.2rem;
-    }
-    .top-bar-left {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-    .top-bar .logo-img {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      object-fit: contain;
-    }
-    .top-bar h1 {
-      font-size: 1.2rem;
-      color: var(--primary-dark);
-    }
-    .top-bar h1 span {
-      font-size: 0.8rem;
-      color: #8D6E63;
-      font-weight: 400;
-      display: block;
-    }
-    .top-bar-right {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      font-size: 0.9rem;
-    }
-    .top-bar-right .user-name {
-      color: var(--primary-dark);
-      font-weight: 600;
-    }
-    .logout-link {
-      color: var(--danger);
-      cursor: pointer;
-      text-decoration: underline;
-      font-weight: 500;
-      font-size: 0.85rem;
-    }
-
-    /* TABS */
-    .tab-bar {
-      display: flex;
-      gap: 0;
-      margin-bottom: 1.2rem;
-      background: var(--card);
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-    .tab-btn {
-      flex: 1;
-      padding: 0.85rem 1rem;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.95rem;
-      color: var(--text);
-      transition: all 0.2s;
-      text-align: center;
-    }
-    .tab-btn.active {
-      background: var(--primary);
-      color: white;
-    }
-    .tab-btn:not(.active):hover {
-      background: rgba(0,105,92,0.06);
-    }
-
-    /* CARDS */
-    .card {
-      background: var(--card);
-      border-radius: 14px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
-    }
-    .card-title {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #8D6E63;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.8rem;
-    }
-
-    /* TAB 1 - GENERATE REPORT */
+    .top-bar { background: var(--card); border-radius: 16px; padding: 1rem 1.5rem; box-shadow: 0 4px 16px rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1.2rem; }
+    .top-bar-left { display: flex; align-items: center; gap: 0.8rem; }
+    .top-bar .logo-img { width: 44px; height: 44px; border-radius: 50%; object-fit: contain; }
+    .top-bar h1 { font-size: 1.2rem; color: var(--primary-dark); }
+    .top-bar h1 span { font-size: 0.8rem; color: #8D6E63; font-weight: 400; display: block; }
+    .top-bar-right { display: flex; align-items: center; gap: 0.8rem; font-size: 0.9rem; }
+    .top-bar-right .user-name { color: var(--primary-dark); font-weight: 600; }
+    .logout-link { color: var(--danger); cursor: pointer; text-decoration: underline; font-weight: 500; font-size: 0.85rem; }
+    .tab-bar { display: flex; gap: 0; margin-bottom: 1.2rem; background: var(--card); border-radius: 14px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .tab-btn { flex: 1; padding: 0.85rem 1rem; border: none; background: transparent; cursor: pointer; font-weight: 600; font-size: 0.95rem; color: var(--text); transition: all 0.2s; text-align: center; }
+    .tab-btn.active { background: var(--primary); color: white; }
+    .tab-btn:not(.active):hover { background: rgba(0,105,92,0.06); }
+    .card { background: var(--card); border-radius: 14px; padding: 1.5rem; box-shadow: 0 4px 16px rgba(0,0,0,0.05); }
+    .card-title { font-size: 0.85rem; font-weight: 600; color: #8D6E63; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.8rem; }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
-
-    .report-info-box {
-      background: #f9f7f4;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1rem 1.2rem;
-      margin-bottom: 1.2rem;
-      font-size: 0.9rem;
-      line-height: 1.6;
-    }
-    .report-info-box h3 {
-      color: var(--primary);
-      margin-bottom: 0.3rem;
-      font-size: 1rem;
-    }
-    .report-date-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-      align-items: flex-end;
-      margin-bottom: 1rem;
-    }
-    .report-date-row label {
-      font-weight: 600;
-      font-size: 0.9rem;
-      display: block;
-      margin-bottom: 0.3rem;
-    }
-    .report-date-row input[type="date"] {
-      padding: 0.55rem 0.8rem;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-size: 1rem;
-      color: var(--text);
-      background: #faf8f5;
-    }
-    .report-date-row input[type="date"]:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(0,105,92,0.12);
-    }
-    .report-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-    }
-    .status-msg {
-      margin-top: 1rem;
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
+    .report-info-box { background: #f9f7f4; border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1.2rem; font-size: 0.9rem; line-height: 1.6; }
+    .report-info-box h3 { color: var(--primary); margin-bottom: 0.3rem; font-size: 1rem; }
+    .report-date-row { display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: flex-end; margin-bottom: 1rem; }
+    .report-date-row label { font-weight: 600; font-size: 0.9rem; display: block; margin-bottom: 0.3rem; }
+    .report-date-row input[type="date"], .report-date-row select { padding: 0.55rem 0.8rem; border: 1px solid var(--border); border-radius: 10px; font-size: 1rem; color: var(--text); background: #faf8f5; }
+    .report-date-row input[type="date"]:focus, .report-date-row select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,105,92,0.12); }
+    .report-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .status-msg { margin-top: 1rem; font-weight: 600; font-size: 0.9rem; }
     .status-msg.ok { color: var(--success); }
     .status-msg.err { color: var(--danger); }
     .status-msg a { color: var(--primary); text-decoration: underline; }
-
-    /* TAB 2 - ANALYTICS DASHBOARD */
-    .dash-loading {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: #8D6E63;
-      font-size: 1rem;
-    }
-    .dash-loading .spinner {
-      display: inline-block;
-      width: 32px;
-      height: 32px;
-      border: 3px solid var(--border);
-      border-top-color: var(--primary);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin-bottom: 0.8rem;
-    }
+    .pm-comment-wrap { margin-top: 0.8rem; }
+    .pm-comment-wrap label { display: block; font-weight: 600; font-size: 0.85rem; color: #555; margin-bottom: 0.3rem; }
+    .pm-comment-wrap textarea { width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.9rem; min-height: 55px; resize: vertical; }
+    .dash-loading { text-align: center; padding: 3rem 1rem; color: #8D6E63; font-size: 1rem; }
+    .dash-loading .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 0.8rem; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    .dash-error {
-      text-align: center;
-      padding: 2rem;
-      color: var(--danger);
-    }
-
-    /* KPI CARDS */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      margin-bottom: 1.2rem;
-    }
-    .kpi-card {
-      background: var(--card);
-      border-radius: 14px;
-      padding: 1.2rem;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
-      text-align: center;
-      border-top: 4px solid var(--primary);
-    }
+    .dash-error { text-align: center; padding: 2rem; color: var(--danger); }
+    .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.2rem; }
+    .kpi-card { background: var(--card); border-radius: 14px; padding: 1.2rem; box-shadow: 0 4px 16px rgba(0,0,0,0.05); text-align: center; border-top: 4px solid var(--primary); }
     .kpi-card.kpi-pending { border-top-color: var(--warn); }
     .kpi-card.kpi-approved { border-top-color: var(--success); }
     .kpi-card.kpi-efficiency { border-top-color: #FFB74D; }
     .kpi-card.kpi-sites { border-top-color: #7E57C2; }
     .kpi-card.kpi-rate { border-top-color: #42A5F5; }
-    .kpi-value {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--primary-dark);
-      line-height: 1.1;
-    }
-    .kpi-label {
-      font-size: 0.8rem;
-      color: #8D6E63;
-      margin-top: 0.3rem;
-      font-weight: 500;
-    }
-
-    /* CHART ROWS */
-    .chart-row {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1.2rem;
-    }
-    .chart-col-left {
-      flex: 6;
-      min-width: 0;
-    }
-    .chart-col-right {
-      flex: 4;
-      min-width: 0;
-    }
-    .chart-col-half {
-      flex: 1;
-      min-width: 0;
-    }
-    .chart-wrapper {
-      height: 300px;
-      position: relative;
-    }
-
-    /* WEEKLY TABLE */
-    .weekly-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-    }
-    .weekly-table th {
-      background: var(--primary);
-      color: white;
-      padding: 0.6rem 0.8rem;
-      text-align: left;
-      font-weight: 600;
-    }
+    .kpi-value { font-size: 2rem; font-weight: 700; color: var(--primary-dark); line-height: 1.1; }
+    .kpi-label { font-size: 0.8rem; color: #8D6E63; margin-top: 0.3rem; font-weight: 500; }
+    .chart-row { display: flex; gap: 1rem; margin-bottom: 1.2rem; }
+    .chart-col-left { flex: 6; min-width: 0; }
+    .chart-col-right { flex: 4; min-width: 0; }
+    .chart-col-half { flex: 1; min-width: 0; }
+    .chart-wrapper { height: 300px; position: relative; }
+    .weekly-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .weekly-table th { background: var(--primary); color: white; padding: 0.6rem 0.8rem; text-align: left; font-weight: 600; }
     .weekly-table th:first-child { border-radius: 8px 0 0 0; }
     .weekly-table th:last-child { border-radius: 0 8px 0 0; }
-    .weekly-table td {
-      padding: 0.55rem 0.8rem;
-      border-bottom: 1px solid var(--border);
-    }
+    .weekly-table td { padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--border); }
     .weekly-table tr:nth-child(even) td { background: #faf8f5; }
-    .weekly-table tr:last-child td:first-child { border-radius: 0 0 0 8px; }
-    .weekly-table tr:last-child td:last-child { border-radius: 0 0 8px 0; }
     .table-scroll { overflow-x: auto; }
-
-    /* ISSUES SECTION */
-    .issues-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 0.8rem;
-    }
-    .issue-card {
-      background: var(--card);
-      border-radius: 12px;
-      padding: 1rem 1.2rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      border-left: 4px solid var(--danger);
-    }
-    .issue-card .issue-block {
-      font-weight: 700;
-      color: var(--primary-dark);
-      font-size: 0.95rem;
-    }
-    .issue-card .issue-details {
-      color: var(--text);
-      font-size: 0.85rem;
-      margin-top: 0.3rem;
-      line-height: 1.4;
-    }
-    .section-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--primary-dark);
-      margin-bottom: 0.8rem;
-    }
-    .no-data-msg {
-      text-align: center;
-      color: #8D6E63;
-      padding: 1.5rem;
-      font-size: 0.9rem;
-    }
-
-    /* RESPONSIVE */
+    .issues-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.8rem; }
+    .issue-card { background: var(--card); border-radius: 12px; padding: 1rem 1.2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border-left: 4px solid var(--danger); }
+    .issue-card .issue-block { font-weight: 700; color: var(--primary-dark); font-size: 0.95rem; }
+    .issue-card .issue-details { color: var(--text); font-size: 0.85rem; margin-top: 0.3rem; line-height: 1.4; }
+    .section-title { font-size: 1.05rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.8rem; }
+    .no-data-msg { text-align: center; color: #8D6E63; padding: 1.5rem; font-size: 0.9rem; }
     @media (max-width: 900px) {
       .kpi-grid { grid-template-columns: repeat(2, 1fr); }
       .chart-row { flex-direction: column; }
@@ -437,7 +111,6 @@
 </head>
 <body>
 
-  <!-- LOGIN SCREEN -->
   <div id="loginScreen" class="login-screen">
     <div class="login-box">
       <img src="https://raw.githubusercontent.com/halbeeghdcrs-lab/HALBEEG-HDCRS/main/logo.png" alt="Logo" class="logo-img">
@@ -451,10 +124,8 @@
     </div>
   </div>
 
-  <!-- MAIN APP -->
   <div id="appMain" class="app-container hidden">
 
-    <!-- TOP BAR -->
     <div class="top-bar">
       <div class="top-bar-left">
         <img src="https://raw.githubusercontent.com/halbeeghdcrs-lab/HALBEEG-HDCRS/main/logo.png" alt="Logo" class="logo-img">
@@ -466,18 +137,19 @@
       </div>
     </div>
 
-    <!-- TAB BAR -->
     <div class="tab-bar">
       <button class="tab-btn active" id="tabBtnReport" onclick="switchTab('report')">Generate Report</button>
       <button class="tab-btn" id="tabBtnDashboard" onclick="switchTab('dashboard')">Analytics Dashboard</button>
     </div>
 
-    <!-- TAB 1: GENERATE REPORT -->
     <div class="tab-panel active" id="panelReport">
       <div class="card">
         <div class="report-info-box">
           <h3>Client Report Generation</h3>
-          <p>Generate a professional Daily Construction Progress Report PDF covering all 12 sections of the daily report for the selected date and site. Only <strong>Director-reviewed</strong> reports are included.</p>
+          <p>Generate a professional Daily Construction Progress Report PDF covering all 12 sections of the daily report for the selected date and site. Only <strong>Approved</strong> reports are included in the PDF.</p>
+          <p style="font-size:0.82rem;color:#8B6F47;margin-top:0.4rem">
+            Workflow: Director must mark a report <strong>Reviewed</strong> before the PM can <strong>Approve</strong>. Only Approved reports can be turned into a client PDF.
+          </p>
         </div>
         <div class="report-date-row">
           <div>
@@ -491,18 +163,20 @@
             </select>
           </div>
         </div>
-        <div class="report-actions">
+        <div class="pm-comment-wrap">
+          <label for="pmComment">PM Comment (optional — saved on Approve)</label>
+          <textarea id="pmComment" placeholder="e.g. Reviewed and approved for client submission."></textarea>
+        </div>
+        <div class="report-actions" style="margin-top:0.8rem">
+          <button class="btn" style="background:var(--success)" onclick="approveReport()">Approve Reviewed Reports</button>
           <button class="btn" onclick="generateReport()">Generate PDF</button>
-          <button class="btn" style="background:var(--success)" onclick="approveReport()">Approve</button>
           <button class="btn btn-danger" onclick="sendReport()">Send to Client</button>
         </div>
         <div id="reportStatus" class="status-msg"></div>
       </div>
     </div>
 
-    <!-- TAB 2: ANALYTICS DASHBOARD -->
     <div class="tab-panel" id="panelDashboard">
-      <!-- V5.0: Date Range Report Generator -->
       <div style="background:var(--card);border-radius:14px;padding:1rem 1.2rem;margin-bottom:1.2rem;box-shadow:0 4px 16px rgba(0,0,0,0.05);border:1px solid var(--border)">
         <h3 style="color:var(--primary-dark);margin:0 0 0.4rem;font-size:1.05rem;font-weight:700">Generate Period Report</h3>
         <p style="font-size:0.85rem;color:#8D6E63;margin:0 0 0.6rem">Generate a summary report for any date range (weekly, monthly, quarterly, etc.)</p>
@@ -515,6 +189,12 @@
             <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.2rem">To Report Date:</label>
             <input type="date" id="pmRangeTo" style="padding:0.55rem 0.8rem;border:1px solid var(--border);border-radius:10px;font-size:1rem;background:#faf8f5">
           </div>
+          <div>
+            <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.2rem">Site (optional):</label>
+            <select id="pmRangeSite" style="padding:0.55rem 0.8rem;border:1px solid var(--border);border-radius:10px;font-size:1rem;background:#faf8f5">
+              <option value="">-- All Sites --</option>
+            </select>
+          </div>
           <button class="btn btn-sm" id="pmGenRangeBtn" style="background:var(--primary-dark)">Generate Report</button>
         </div>
         <div id="pmRangeReportResult" style="margin-top:0.8rem;font-size:0.9rem"></div>
@@ -526,51 +206,35 @@
       <div id="dashError" class="dash-error hidden"></div>
       <div id="dashContent" class="hidden">
 
-        <!-- KPI CARDS -->
         <div class="kpi-grid" id="kpiGrid"></div>
 
-        <!-- CHARTS ROW 1 -->
         <div class="chart-row">
           <div class="chart-col-left card">
             <div class="card-title">Submission Trend (Last 30 Days)</div>
-            <div class="chart-wrapper">
-              <canvas id="chartSubmission"></canvas>
-            </div>
+            <div class="chart-wrapper"><canvas id="chartSubmission"></canvas></div>
           </div>
           <div class="chart-col-right card">
             <div class="card-title">Block Status Distribution</div>
-            <div class="chart-wrapper">
-              <canvas id="chartBlockStatus"></canvas>
-            </div>
+            <div class="chart-wrapper"><canvas id="chartBlockStatus"></canvas></div>
           </div>
         </div>
 
-        <!-- CHARTS ROW 2 -->
         <div class="chart-row">
           <div class="chart-col-half card">
             <div class="card-title">Workforce Trend (Last 7 Days)</div>
-            <div class="chart-wrapper">
-              <canvas id="chartWorkforce"></canvas>
-            </div>
+            <div class="chart-wrapper"><canvas id="chartWorkforce"></canvas></div>
           </div>
           <div class="chart-col-half card">
             <div class="card-title">Weekly Summary</div>
             <div class="table-scroll">
               <table class="weekly-table" id="weeklyTable">
-                <thead>
-                  <tr>
-                    <th>Week Start</th>
-                    <th>Reports</th>
-                    <th>Sites Covered</th>
-                  </tr>
-                </thead>
+                <thead><tr><th>Week Start</th><th>Reports</th><th>Sites Covered</th></tr></thead>
                 <tbody id="weeklyBody"></tbody>
               </table>
             </div>
           </div>
         </div>
 
-        <!-- RECENT ISSUES -->
         <div class="card" style="margin-top:1.2rem">
           <div class="section-title">Recent Issues</div>
           <div class="issues-grid" id="issuesGrid"></div>
@@ -582,139 +246,127 @@
   </div>
 
   <script>
-    console.log('[PM] Portal V5.1 loaded — API_BASE updated, role check case-insensitive.');
-
-    // V5.1: API_BASE updated to the current live deployment (matches RE + Director portals).
+    console.log('[PM] Portal V6.0 loaded');
     var API_BASE = 'https://script.google.com/macros/s/AKfycbzxLQS4aF6XwPzQcy46BGbNQpB_SRHSfS8chos4de_90zTwjZbK2EqELBwmbQS5AReZ/exec';
     var dashboardData = null;
     var chartSubmission = null;
     var chartBlockStatus = null;
     var chartWorkforce = null;
+    var loggedUser = '';
 
-    // Check session on load
     var savedUser = sessionStorage.getItem('hdcre_pm');
-    if (savedUser) {
-      showApp(savedUser);
-    }
+    if (savedUser) { showApp(savedUser); }
 
-    // LOGIN (V5.1 — text-first parsing, case-insensitive PM role check, diagnostics)
+    // LOGIN
     function attemptLogin() {
       var name = document.getElementById('loginName').value.trim();
       var pw = document.getElementById('loginPassword').value.trim();
       var errEl = document.getElementById('loginError');
-      if (!name || !pw) {
-        errEl.textContent = 'Enter name and password.';
-        return;
-      }
+      if (!name || !pw) { errEl.textContent = 'Enter name and password.'; return; }
       errEl.textContent = '';
-
       var url = API_BASE + '?action=login&name=' + encodeURIComponent(name) + '&password=' + encodeURIComponent(pw);
-      console.log('[PM] Login attempt for: ' + name);
-
       fetch(url)
-        .then(function(resp) {
-          console.log('[PM] Response status: ' + resp.status);
-          if (!resp.ok) throw new Error('Server returned ' + resp.status);
-          return resp.text();
-        })
+        .then(function(resp) { if (!resp.ok) throw new Error('Server returned ' + resp.status); return resp.text(); })
         .then(function(text) {
           var data;
           try { data = JSON.parse(text); }
-          catch (e) {
-            throw new Error('Backend did not return JSON. Raw response: ' + text.slice(0, 200));
-          }
-          console.log('[PM] Response: ' + JSON.stringify(data));
-
+          catch (e) { throw new Error('Backend did not return JSON. Raw: ' + text.slice(0, 200)); }
           var roleNorm = String(data.role || '').toUpperCase().replace(/[^A-Z]/g, '');
-
-          // --- Success path: accept PM in any casing ---
           if (data.success && roleNorm === 'PM') {
             sessionStorage.setItem('hdcre_pm', name);
             showApp(name);
             return;
           }
-
           if (data.success && data.role) {
-            errEl.textContent = 'Access denied. Your role is "' + data.role +
-              '" (raw: "' + (data.roleRaw || '?') + '"). This portal is for Project Managers only.';
+            errEl.textContent = 'Access denied. Your role is "' + data.role + '" (raw: "' + (data.roleRaw || '?') + '"). This portal is for Project Managers only.';
             return;
           }
-
-          if (data.success) {
-            errEl.textContent = 'Login OK but no Role assigned. Ask the admin to set your Role to "PM".';
-            return;
-          }
-
-          // --- Failure: diagnostic message ---
+          if (data.success) { errEl.textContent = 'Login OK but no Role assigned.'; return; }
           var msg = 'Login failed. ';
           switch (data.reason) {
-            case 'SHEET_NOT_FOUND':
-              msg += 'No staff sheet found. Tried: ' + (data.triedSheets || []).join(', ') +
-                     '. Create a sheet named "Staff_Accounts".';
-              break;
-            case 'HEADERS_MISSING':
-              msg += 'Staff sheet headers are wrong. Found: ' + JSON.stringify(data.headers || []) +
-                     '. Expected: Name | Password | Role.';
-              break;
-            case 'NO_MATCH':
-              msg += 'Name/password did not match. Sheet "' + (data.sheetUsed || '?') + '" has ' +
-                     (data.totalRows || 0) + ' data row(s). Names found: ' +
-                     (data.namesSample || []).join(', ') + '.';
-              break;
-            default:
-              msg += (data.message || 'Invalid name or password.') +
-                     ' Make sure your account exists in Staff_Accounts with Role = PM.';
+            case 'SHEET_NOT_FOUND': msg += 'No staff sheet found.'; break;
+            case 'HEADERS_MISSING': msg += 'Staff sheet headers are wrong.'; break;
+            case 'NO_MATCH': msg += 'Name/password did not match. Names: ' + (data.namesSample || []).join(', '); break;
+            default: msg += (data.message || 'Invalid credentials.');
           }
           errEl.textContent = msg;
         })
         .catch(function(e) {
-          console.error('[PM] Login error: ' + e.message);
-          if (e.message.indexOf('Failed to fetch') !== -1) {
-            errEl.textContent = 'Network error — cannot reach backend. Check that Code.gs is deployed (Web App, "Anyone" access) and API_BASE is the /exec URL.';
-          } else {
-            errEl.textContent = 'Error: ' + e.message;
-          }
+          if (e.message.indexOf('Failed to fetch') !== -1) errEl.textContent = 'Network error — cannot reach backend.';
+          else errEl.textContent = 'Error: ' + e.message;
         });
     }
 
     function showApp(name) {
+      loggedUser = name;
       document.getElementById('loginScreen').classList.add('hidden');
       document.getElementById('appMain').classList.remove('hidden');
       document.getElementById('loggedUser').textContent = name;
-      // V5.0: Load sites for the Site selector and set up range report button
       loadSites();
       document.getElementById('pmGenRangeBtn').addEventListener('click', generatePmRangeReport);
     }
+    function logout() { sessionStorage.removeItem('hdcre_pm'); location.reload(); }
 
-    function logout() {
-      sessionStorage.removeItem('hdcre_pm');
-      location.reload();
-    }
-
-    // TAB SWITCHING
     function switchTab(tab) {
       var btnReport = document.getElementById('tabBtnReport');
       var btnDash = document.getElementById('tabBtnDashboard');
       var panelReport = document.getElementById('panelReport');
       var panelDash = document.getElementById('panelDashboard');
-
       if (tab === 'report') {
-        btnReport.classList.add('active');
-        btnDash.classList.remove('active');
-        panelReport.classList.add('active');
-        panelDash.classList.remove('active');
+        btnReport.classList.add('active'); btnDash.classList.remove('active');
+        panelReport.classList.add('active'); panelDash.classList.remove('active');
       } else {
-        btnDash.classList.add('active');
-        btnReport.classList.remove('active');
-        panelDash.classList.add('active');
-        panelReport.classList.remove('active');
+        btnDash.classList.add('active'); btnReport.classList.remove('active');
+        panelDash.classList.add('active'); panelReport.classList.remove('active');
         loadDashboard();
       }
     }
 
-    // GENERATE REPORT (TAB 1)
+    // APPROVE — V6.0: sends comment, backend only approves Reviewed reports
+    function approveReport() {
+      var date = document.getElementById('reportDate').value;
+      var site = document.getElementById('reportSite').value;
+      var comment = document.getElementById('pmComment').value.trim();
+      if (!date) { alert('Please select a date.'); return; }
+      if (!confirm('Approve all Reviewed reports for ' + date + (site ? ' (' + site + ')' : '') + '?')) { return; }
+      var s = document.getElementById('reportStatus');
+      s.className = 'status-msg';
+      s.textContent = 'Approving...';
+
+      fetch(API_BASE, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'pmApprove',
+          date: date,
+          site: site,
+          pmName: loggedUser,
+          comment: comment
+        })
+      })
+      .then(function(resp) { return resp.text(); })
+      .then(function(text) {
+        var data;
+        try { data = JSON.parse(text); }
+        catch (e) { throw new Error('Backend did not return JSON. Raw: ' + text.slice(0, 200)); }
+        if (data.success) {
+          s.className = 'status-msg ok';
+          s.textContent = '✅ ' + (data.message || 'Approved successfully.');
+          document.getElementById('pmComment').value = '';
+        } else {
+          s.className = 'status-msg err';
+          s.textContent = data.message || 'Failed to approve report.';
+        }
+      })
+      .catch(function(err) {
+        s.className = 'status-msg err';
+        s.textContent = 'Approve failed: ' + err.message;
+      });
+    }
+
+    // GENERATE PDF
     function generateReport() {
       var date = document.getElementById('reportDate').value;
+      var site = document.getElementById('reportSite').value;
       if (!date) { alert('Please select a date.'); return; }
       var s = document.getElementById('reportStatus');
       s.className = 'status-msg';
@@ -722,136 +374,111 @@
 
       fetch(API_BASE, {
         method: 'POST',
-        body: JSON.stringify({ action: 'generateClientPDF', date: date })
+        body: JSON.stringify({ action: 'generateClientPDF', date: date, site: site })
       })
       .then(function(resp) { return resp.json(); })
       .then(function(data) {
         if (data.success) {
           s.className = 'status-msg ok';
-          s.innerHTML = 'PDF generated successfully.<br><a href="' + data.pdfUrl + '" target="_blank">View / Download PDF</a>';
+          s.innerHTML = '✅ PDF generated. <a href="' + data.pdfUrl + '" target="_blank">View / Download PDF</a>';
         } else {
           s.className = 'status-msg err';
-          s.textContent = data.message || 'No approved reports for this date.';
+          s.textContent = data.message || 'No Approved reports for this date.';
         }
       })
       .catch(function() {
         s.className = 'status-msg err';
-        s.textContent = 'PDF generation failed. Please try again.';
+        s.textContent = 'PDF generation failed.';
       });
     }
 
+    // SEND TO CLIENT — V6.0: uses new backend action
     function sendReport() {
-      var date = document.getElementById('reportDate').value;
-      if (!date) { alert('Please select a date.'); return; }
-      if (!confirm('Send the daily report for ' + date + ' to the client?')) { return; }
-      var s = document.getElementById('reportStatus');
-      s.className = 'status-msg';
-      s.textContent = 'Sending...';
-
-      fetch(API_BASE, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'sendToClient', date: date })
-      })
-      .then(function(resp) { return resp.json(); })
-      .then(function(data) {
-        if (data.success) {
-          s.className = 'status-msg ok';
-          s.textContent = 'Report sent to client successfully!';
-        } else {
-          s.className = 'status-msg err';
-          s.textContent = data.message || 'Failed to send report.';
-        }
-      })
-      .catch(function() {
-        s.className = 'status-msg err';
-        s.textContent = 'Send failed. Please try again.';
-      });
-    }
-
-    // V5.0: PM Approves the report (after Director has Reviewed)
-    function approveReport() {
       var date = document.getElementById('reportDate').value;
       var site = document.getElementById('reportSite').value;
       if (!date) { alert('Please select a date.'); return; }
-      if (!confirm('Approve the reviewed report for ' + date + (site ? ' (' + site + ')' : '') + '?')) { return; }
+      if (!confirm('Send the client PDF for ' + date + (site ? ' (' + site + ')' : '') + ' to ' + 'the client?')) return;
       var s = document.getElementById('reportStatus');
       s.className = 'status-msg';
-      s.textContent = 'Approving...';
+      s.textContent = 'Sending to client...';
 
       fetch(API_BASE, {
         method: 'POST',
-        body: JSON.stringify({ action: 'pmApprove', date: date, site: site, pmName: loggedUser })
+        body: JSON.stringify({ action: 'sendToClient', date: date, site: site })
       })
       .then(function(resp) { return resp.json(); })
       .then(function(data) {
         if (data.success) {
           s.className = 'status-msg ok';
-          s.textContent = 'Report approved successfully!';
+          s.textContent = '✅ ' + (data.message || 'Sent to client successfully.');
         } else {
           s.className = 'status-msg err';
-          s.textContent = data.message || 'Failed to approve report.';
+          s.textContent = data.message || 'Failed to send.';
         }
       })
       .catch(function() {
         s.className = 'status-msg err';
-        s.textContent = 'Approve failed. Please try again.';
+        s.textContent = 'Send failed.';
       });
     }
 
-    // V5.0: Load sites into the Site selector
     function loadSites() {
       fetch(API_BASE + '?endpoint=sites')
         .then(function(r) { return r.json(); })
         .then(function(data) {
           var sites = data.sites || data || [];
           var sel = document.getElementById('reportSite');
+          var sel2 = document.getElementById('pmRangeSite');
           sel.innerHTML = '<option value="">-- All Sites --</option>';
+          sel2.innerHTML = '<option value="">-- All Sites --</option>';
           for (var i = 0; i < sites.length; i++) {
             var name = sites[i].name || sites[i].Site || sites[i];
             sel.innerHTML += '<option value="' + name + '">' + name + '</option>';
+            sel2.innerHTML += '<option value="' + name + '">' + name + '</option>';
           }
         })
-        .catch(function() { /* Sites will load on next attempt */ });
+        .catch(function() {});
     }
 
-    // V5.0: PM date range report from Analytics Dashboard
     function generatePmRangeReport() {
       var from = document.getElementById('pmRangeFrom').value;
       var to = document.getElementById('pmRangeTo').value;
+      var site = document.getElementById('pmRangeSite').value;
       var resultDiv = document.getElementById('pmRangeReportResult');
       if (!from || !to) { resultDiv.innerHTML = '<span style="color:var(--danger)">Please select both From and To dates.</span>'; return; }
       if (from > to) { resultDiv.innerHTML = '<span style="color:var(--danger)">From date must be before To date.</span>'; return; }
 
       resultDiv.innerHTML = 'Generating report...';
-      fetch(API_BASE + '?endpoint=rangeReport&from=' + from + '&to=' + to)
+      var url = API_BASE + '?endpoint=rangeReport&from=' + from + '&to=' + to + (site ? '&site=' + encodeURIComponent(site) : '');
+      fetch(url)
         .then(function(r) { return r.json(); })
         .then(function(data) {
           if (!data.success) { resultDiv.innerHTML = '<span style="color:var(--danger)">Error: ' + (data.message || 'Unknown') + '</span>'; return; }
           var reports = data.reports || [];
           var totalReports = reports.length;
           var totalIssues = 0;
-          var avgEfficiency = 0;
-          var effCount = 0;
+          var avgEfficiency = 0, effCount = 0;
           var sites = {};
+          var effMap = { 'Excellent': 95, 'Good': 75, 'Fair': 50, 'Poor': 25 };
           for (var i = 0; i < reports.length; i++) {
             var r = reports[i];
             if (r.site) sites[r.site] = (sites[r.site] || 0) + 1;
-            if (r.efficiency) { avgEfficiency += (parseFloat(r.efficiency) || 0); effCount++; }
+            if (r.efficiency && effMap[r.efficiency] != null) { avgEfficiency += effMap[r.efficiency]; effCount++; }
             if (r.issues && r.issues.length) totalIssues += r.issues.length;
           }
           if (effCount > 0) avgEfficiency = (avgEfficiency / effCount).toFixed(1);
 
           var html = '<div style="background:#f9f7f4;border-radius:8px;padding:1rem;border:1px solid var(--border);margin-top:0.5rem">';
-          html += '<h4 style="color:var(--primary-dark);margin:0 0 0.5rem">Period Report: ' + from + ' to ' + to + '</h4>';
+          html += '<h4 style="color:var(--primary-dark);margin:0 0 0.5rem">Period Report: ' + from + ' to ' + to + (site ? ' — ' + site : '') + '</h4>';
           html += '<table style="font-size:0.85rem"><tr><th>Metric</th><th>Value</th></tr>';
           html += '<tr><td>Total Reports</td><td>' + totalReports + '</td></tr>';
-          html += '<tr><td>Avg Efficiency</td><td>' + (avgEfficiency || 'N/A') + '</td></tr>';
+          html += '<tr><td>Avg Efficiency</td><td>' + (avgEfficiency || 'N/A') + (avgEfficiency ? '%' : '') + '</td></tr>';
           html += '<tr><td>Total Issues</td><td>' + totalIssues + '</td></tr>';
           html += '<tr><td>Sites Covered</td><td>' + Object.keys(sites).length + '</td></tr>';
           html += '</table>';
           if (Object.keys(sites).length > 0) {
             html += '<h5 style="margin:0.5rem 0 0.2rem;color:var(--primary-dark)">Reports per Site</h5><ul>';
-            for (var s in sites) { html += '<li>' + s + ': ' + sites[s] + ' reports</li>'; }
+            for (var s in sites) html += '<li>' + s + ': ' + sites[s] + ' reports</li>';
             html += '</ul>';
           }
           html += '</div>';
@@ -860,28 +487,23 @@
         .catch(function(err) { resultDiv.innerHTML = '<span style="color:var(--danger)">Network error: ' + err.message + '</span>'; });
     }
 
-    // DASHBOARD (TAB 2)
+    // DASHBOARD
     function loadDashboard() {
-      if (dashboardData) {
-        renderDashboard(dashboardData);
-        return;
-      }
+      if (dashboardData) { renderDashboard(dashboardData); return; }
       var loadingEl = document.getElementById('dashLoading');
       var errorEl = document.getElementById('dashError');
       var contentEl = document.getElementById('dashContent');
       loadingEl.classList.remove('hidden');
       errorEl.classList.add('hidden');
       contentEl.classList.add('hidden');
-
-      var url = API_BASE + '?endpoint=dashboard';
-      fetch(url)
+      fetch(API_BASE + '?endpoint=dashboard')
         .then(function(resp) { return resp.json(); })
         .then(function(data) {
           loadingEl.classList.add('hidden');
           dashboardData = data;
           renderDashboard(data);
         })
-        .catch(function(err) {
+        .catch(function() {
           loadingEl.classList.add('hidden');
           errorEl.classList.remove('hidden');
           errorEl.textContent = 'Failed to load dashboard data. Please try again.';
@@ -893,7 +515,6 @@
       var errorEl = document.getElementById('dashError');
       errorEl.classList.add('hidden');
       contentEl.classList.remove('hidden');
-
       var kpis = data.kpis || {};
       renderKPICards(kpis);
       renderSubmissionChart(data.submissionTrend || []);
@@ -926,149 +547,60 @@
 
     function renderSubmissionChart(trend) {
       var ctx = document.getElementById('chartSubmission').getContext('2d');
-      var labels = [];
-      var values = [];
+      var labels = [], values = [];
       for (var i = 0; i < trend.length; i++) {
         var d = trend[i].date || '';
         var parts = d.split('-');
-        if (parts.length === 3) {
-          labels.push(parts[1] + '/' + parts[2]);
-        } else {
-          labels.push(d);
-        }
+        labels.push(parts.length === 3 ? parts[1] + '/' + parts[2] : d);
         values.push(trend[i].count || 0);
       }
-      if (chartSubmission) { chartSubmission.destroy(); }
+      if (chartSubmission) chartSubmission.destroy();
       chartSubmission = new Chart(ctx, {
         type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Reports Submitted',
-            data: values,
-            borderColor: '#00695C',
-            backgroundColor: 'rgba(0,105,92,0.1)',
-            fill: true,
-            tension: 0.3,
-            borderWidth: 2,
-            pointBackgroundColor: '#00695C',
-            pointRadius: 3
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: { stepSize: 1, color: '#8D6E63' },
-              grid: { color: 'rgba(0,0,0,0.04)' }
-            },
-            x: {
-              ticks: { color: '#8D6E63', maxRotation: 45 },
-              grid: { display: false }
-            }
-          }
-        }
+        data: { labels: labels, datasets: [{ label: 'Reports Submitted', data: values, borderColor: '#00695C', backgroundColor: 'rgba(0,105,92,0.1)', fill: true, tension: 0.3, borderWidth: 2, pointBackgroundColor: '#00695C', pointRadius: 3 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: '#8D6E63' }, grid: { color: 'rgba(0,0,0,0.04)' } },
+                    x: { ticks: { color: '#8D6E63', maxRotation: 45 }, grid: { display: false } } } }
       });
     }
 
     function renderBlockStatusChart(summary) {
       var ctx = document.getElementById('chartBlockStatus').getContext('2d');
-      var labels = [];
-      var values = [];
+      var labels = [], values = [];
       var keys = Object.keys(summary);
-      for (var i = 0; i < keys.length; i++) {
-        labels.push(keys[i]);
-        values.push(summary[keys[i]]);
-      }
+      for (var i = 0; i < keys.length; i++) { labels.push(keys[i]); values.push(summary[keys[i]]); }
       var colors = ['#00695C', '#E65100', '#80CBC4', '#C44536', '#FFB74D', '#A5D6A7'];
-      if (chartBlockStatus) { chartBlockStatus.destroy(); }
+      if (chartBlockStatus) chartBlockStatus.destroy();
       chartBlockStatus = new Chart(ctx, {
         type: 'doughnut',
-        data: {
-          labels: labels,
-          datasets: [{
-            data: values,
-            backgroundColor: colors.slice(0, labels.length),
-            borderWidth: 2,
-            borderColor: '#ffffff'
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: { padding: 12, usePointStyle: true, color: '#3E2723', font: { size: 12 } }
-            }
-          },
-          cutout: '55%'
-        }
+        data: { labels: labels, datasets: [{ data: values, backgroundColor: colors.slice(0, labels.length), borderWidth: 2, borderColor: '#fff' }] },
+        options: { responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { padding: 12, usePointStyle: true, color: '#3E2723', font: { size: 12 } } } },
+          cutout: '55%' }
       });
     }
 
     function renderWorkforceChart(trend) {
       var ctx = document.getElementById('chartWorkforce').getContext('2d');
-      var labels = [];
-      var planned = [];
-      var available = [];
+      var labels = [], planned = [], available = [];
       for (var i = 0; i < trend.length; i++) {
         var d = trend[i].date || '';
         var parts = d.split('-');
-        if (parts.length === 3) {
-          labels.push(parts[1] + '/' + parts[2]);
-        } else {
-          labels.push(d);
-        }
+        labels.push(parts.length === 3 ? parts[1] + '/' + parts[2] : d);
         planned.push(trend[i].planned || 0);
         available.push(trend[i].available || 0);
       }
-      if (chartWorkforce) { chartWorkforce.destroy(); }
+      if (chartWorkforce) chartWorkforce.destroy();
       chartWorkforce = new Chart(ctx, {
         type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: 'Planned',
-              data: planned,
-              backgroundColor: '#00695C',
-              borderRadius: 4
-            },
-            {
-              label: 'Available',
-              data: available,
-              backgroundColor: '#80CBC4',
-              borderRadius: 4
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'top',
-              labels: { usePointStyle: true, color: '#3E2723', font: { size: 12 } }
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: { color: '#8D6E63' },
-              grid: { color: 'rgba(0,0,0,0.04)' }
-            },
-            x: {
-              ticks: { color: '#8D6E63' },
-              grid: { display: false }
-            }
-          }
-        }
+        data: { labels: labels, datasets: [
+          { label: 'Planned', data: planned, backgroundColor: '#00695C', borderRadius: 4 },
+          { label: 'Available', data: available, backgroundColor: '#80CBC4', borderRadius: 4 }
+        ] },
+        options: { responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'top', labels: { usePointStyle: true, color: '#3E2723', font: { size: 12 } } } },
+          scales: { y: { beginAtZero: true, ticks: { color: '#8D6E63' }, grid: { color: 'rgba(0,0,0,0.04)' } },
+                    x: { ticks: { color: '#8D6E63' }, grid: { display: false } } } }
       });
     }
 
@@ -1083,15 +615,8 @@
         var w = weeks[i];
         var d = w.weekStart || '';
         var parts = d.split('-');
-        var display = d;
-        if (parts.length === 3) {
-          display = parts[1] + '/' + parts[2] + '/' + parts[0];
-        }
-        html += '<tr>';
-        html += '<td>' + display + '</td>';
-        html += '<td>' + (w.reports || 0) + '</td>';
-        html += '<td>' + (w.sitesCovered || 0) + '</td>';
-        html += '</tr>';
+        var display = parts.length === 3 ? (parts[1] + '/' + parts[2] + '/' + parts[0]) : d;
+        html += '<tr><td>' + display + '</td><td>' + (w.reports || 0) + '</td><td>' + (w.sitesCovered || 0) + '</td></tr>';
       }
       tbody.innerHTML = html;
     }
@@ -1102,15 +627,11 @@
         grid.innerHTML = '<div class="no-data-msg">No issues reported.</div>';
         return;
       }
-      var limit = issues.length;
-      if (limit > 10) { limit = 10; }
+      var limit = Math.min(issues.length, 10);
       var html = '';
       for (var i = 0; i < limit; i++) {
         var iss = issues[i];
-        html += '<div class="issue-card">';
-        html += '<div class="issue-block">' + (iss.block || 'N/A') + '</div>';
-        html += '<div class="issue-details">' + (iss.details || 'No details') + '</div>';
-        html += '</div>';
+        html += '<div class="issue-card"><div class="issue-block">' + (iss.block || 'N/A') + '</div><div class="issue-details">' + (iss.details || 'No details') + '</div></div>';
       }
       grid.innerHTML = html;
     }
